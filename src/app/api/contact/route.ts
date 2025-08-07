@@ -1,132 +1,212 @@
-import { NextRequest, NextResponse } from 'next/server';
 import nodemailer from 'nodemailer';
+import { NextResponse } from 'next/server';
 
-// Email validation function
-function isValidEmail(email: string): boolean {
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  return emailRegex.test(email);
-}
+// Disable Next.js default body parsing for this route
+export const runtime = 'nodejs';
 
-// Input validation function
-function validateFormData(data: { name?: string; email?: string; subject?: string; message?: string }) {
-  const errors: string[] = [];
-
-  if (!data.name || data.name.trim().length < 2) {
-    errors.push('Name must be at least 2 characters long');
-  }
-
-  if (!data.email || !isValidEmail(data.email)) {
-    errors.push('Please provide a valid email address');
-  }
-
-  if (!data.subject || data.subject.trim().length === 0) {
-    errors.push('Please select a subject');
-  }
-
-  if (!data.message || data.message.trim().length < 10) {
-    errors.push('Message must be at least 10 characters long');
-  }
-
-  return errors;
-}
-
-export async function POST(request: NextRequest) {
+export async function POST(request: Request) {
   try {
-    // Parse the request body
-    const body = await request.json();
-    const { name, email, subject, message } = body;
+    const { name, email, message } = await request.json();
 
-    // Validate the form data
-    const validationErrors = validateFormData({ name, email, subject, message });
-    
-    if (validationErrors.length > 0) {
+    // Basic validation
+    if (!name || !email || !message) {
       return NextResponse.json(
-        { 
-          success: false, 
-          message: 'Validation failed', 
-          errors: validationErrors 
-        },
+        { message: 'All fields are required' },
         { status: 400 }
       );
     }
 
-    // Check if email credentials are configured
-    const emailUser = process.env.EMAIL_USER;
-    const emailPass = process.env.EMAIL_PASS;
-
-    if (!emailUser || !emailPass) {
-      console.error('Email credentials not configured');
+    // Email validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
       return NextResponse.json(
-        { 
-          success: false, 
-          message: 'Email service not configured. Please contact support.' 
-        },
-        { status: 500 }
+        { message: 'Invalid email format' },
+        { status: 400 }
       );
     }
 
-    // Create transporter
+    // Log environment variables (without showing the password)
+    console.log('SMTP Configuration:');
+    console.log('Host:', process.env.SMTP_HOST);
+    console.log('Port:', process.env.SMTP_PORT);
+    console.log('User:', process.env.SMTP_USER);
+    console.log('From:', process.env.SMTP_FROM);
+    console.log('Password set:', !!process.env.SMTP_PASS);
+
+    // Create transporter with correct Zoho configuration
+    // Zoho supports both port 465 (SSL) and 587 (TLS)
+    const port = parseInt(process.env.SMTP_PORT || '587');
+    const isSecurePort = port === 465;
+    
     const transporter = nodemailer.createTransport({
-      service: 'gmail', // You can change this to other services like 'outlook', 'yahoo', etc.
+      host: process.env.SMTP_HOST || 'smtp.zoho.com.au',
+      port: port,
+      secure: isSecurePort, // true for 465, false for 587
       auth: {
-        user: emailUser,
-        pass: emailPass,
+        user: process.env.SMTP_USER,
+        pass: process.env.SMTP_PASS,
       },
+      tls: {
+        // Do not fail on invalid certs
+        rejectUnauthorized: false,
+        // Minimum TLS version
+        minVersion: 'TLSv1.2',
+        // For port 587
+        ciphers: 'SSLv3'
+      },
+      // Connection timeout
+      connectionTimeout: 30000,
+      greetingTimeout: 30000,
+      socketTimeout: 30000,
+      // Remove debug in production
+      debug: process.env.NODE_ENV === 'development',
+      logger: process.env.NODE_ENV === 'development',
     });
 
-    // Email content
-    const subjectOptions: { [key: string]: string } = {
-      'technical-support': 'Technical Support Request',
-      'feature-request': 'Feature Request',
-      'bug-report': 'Bug Report',
-      'general-inquiry': 'General Inquiry',
-      'feedback': 'Feedback'
-    };
+    // Test the connection first
+    console.log('Testing SMTP connection...');
+    try {
+      await transporter.verify();
+      console.log('SMTP connection verified successfully');
+    } catch (verifyError: any) {
+      console.error('SMTP verification failed:', verifyError);
+      
+      // Check for common Zoho issues
+      if (verifyError.message?.includes('Invalid login')) {
+        return NextResponse.json(
+          { 
+            message: 'Email authentication failed. Please check if app-specific password is configured in Zoho.',
+            hint: 'You may need to generate an app-specific password in Zoho Mail settings'
+          },
+          { status: 500 }
+        );
+      }
+      
+      throw verifyError;
+    }
 
-    const emailSubject = subjectOptions[subject] || 'Contact Form Submission';
-    
-    const emailContent = `
-      New contact form submission from Carbie website:
-      
-      Name: ${name}
-      Email: ${email}
-      Subject: ${emailSubject}
-      
-      Message:
-      ${message}
-      
-      ---
-      This email was sent from the Carbie contact form.
+    // Prepare email content with better formatting
+    const htmlContent = `
+      <!DOCTYPE html>
+      <html>
+        <head>
+          <style>
+            body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+            .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+            .header { background-color: #10b981; color: white; padding: 20px; border-radius: 8px 8px 0 0; }
+            .content { background-color: #f9f9f9; padding: 20px; border-radius: 0 0 8px 8px; }
+            .field { margin-bottom: 15px; }
+            .label { font-weight: bold; color: #555; }
+            .value { margin-top: 5px; padding: 10px; background-color: white; border-radius: 4px; }
+            .message { white-space: pre-wrap; }
+          </style>
+        </head>
+        <body>
+          <div class="container">
+            <div class="header">
+              <h2 style="margin: 0;">New Contact Form Submission</h2>
+            </div>
+            <div class="content">
+              <div class="field">
+                <div class="label">Name:</div>
+                <div class="value">${name}</div>
+              </div>
+              <div class="field">
+                <div class="label">Email:</div>
+                <div class="value">${email}</div>
+              </div>
+              <div class="field">
+                <div class="label">Message:</div>
+                <div class="value message">${message}</div>
+              </div>
+            </div>
+          </div>
+        </body>
+      </html>
     `;
 
     // Send email
-    const mailOptions = {
-      from: emailUser,
-      to: 'support@carbie.app',
-      subject: `Carbie Contact: ${emailSubject}`,
-      text: emailContent,
-      replyTo: email, // This allows you to reply directly to the user
-    };
+    console.log('Sending email...');
+    const info = await transporter.sendMail({
+      from: `"Carbie Contact Form" <${process.env.SMTP_FROM}>`,
+      to: process.env.SMTP_FROM,
+      subject: `Contact Form: ${name}`,
+      text: `
+Name: ${name}
+Email: ${email}
 
-    await transporter.sendMail(mailOptions);
+Message:
+${message}
+      `,
+      html: htmlContent,
+      replyTo: email,
+    });
 
-    return NextResponse.json(
-      { 
-        success: true, 
-        message: 'Your message has been sent successfully!' 
-      },
-      { status: 200 }
-    );
-
-  } catch (error) {
-    console.error('Error sending email:', error);
+    console.log('Email sent successfully:', info.messageId);
     
+    return NextResponse.json({ 
+      message: 'Email sent successfully',
+      messageId: info.messageId 
+    });
+    
+  } catch (error: any) {
+    console.error('Detailed error sending email:');
+    console.error('Error name:', error.name);
+    console.error('Error message:', error.message);
+    console.error('Error code:', error.code);
+    console.error('Error response:', error.response);
+    console.error('Error responseCode:', error.responseCode);
+
+    // Return more specific error information
+    let errorMessage = 'Failed to send email';
+    let hint = '';
+    
+    if (error.code === 'EAUTH' || error.responseCode === 535) {
+      errorMessage = 'Authentication failed';
+      hint = 'Check if you need an app-specific password for Zoho';
+    } else if (error.code === 'ECONNECTION') {
+      errorMessage = 'Connection failed';
+      hint = 'Check SMTP settings and firewall';
+    } else if (error.code === 'ETIMEDOUT') {
+      errorMessage = 'Connection timed out';
+      hint = 'Check network connectivity and firewall settings';
+    } else if (error.code === 'ESOCKET') {
+      errorMessage = 'Socket error';
+      hint = 'Possible TLS/SSL configuration issue';
+    } else if (error.message) {
+      errorMessage = error.message;
+    }
+
     return NextResponse.json(
       { 
-        success: false, 
-        message: 'Failed to send message. Please try again later.' 
+        message: errorMessage,
+        hint: hint,
+        error: process.env.NODE_ENV === 'development' ? error.message : undefined,
+        code: error.code 
       },
       { status: 500 }
     );
   }
-} 
+}
+
+// Handle unsupported methods
+export async function GET() {
+  return NextResponse.json(
+    { message: 'Method not allowed' },
+    { status: 405 }
+  );
+}
+
+export async function PUT() {
+  return NextResponse.json(
+    { message: 'Method not allowed' },
+    { status: 405 }
+  );
+}
+
+export async function DELETE() {
+  return NextResponse.json(
+    { message: 'Method not allowed' },
+    { status: 405 }
+  );
+}
