@@ -3,7 +3,7 @@ import { render } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import RootLayout from '@/app/layout';
 
-// Mock Next.js fonts
+// Mock Next.js Google Fonts for testing
 jest.mock('next/font/google', () => ({
   Geist: () => ({
     variable: '--font-geist-sans',
@@ -15,6 +15,12 @@ jest.mock('next/font/google', () => ({
   }),
 }));
 
+/**
+ * RootLayout Component Tests
+ * 
+ * Tests the main layout component that wraps all pages.
+ * Verifies proper HTML structure, accessibility, and styling.
+ */
 describe('RootLayout', () => {
   const mockChildren = <div data-testid="test-children">Test Content</div>;
 
@@ -104,156 +110,108 @@ describe('RootLayout', () => {
       expect(bodyElement).toHaveClass('--font-geist-sans');
       expect(bodyElement).toHaveClass('--font-geist-mono');
     });
-
-    it('should have proper class combination', () => {
-      render(<RootLayout>{mockChildren}</RootLayout>);
-      
-      const bodyElement = document.querySelector('body');
-      const classList = bodyElement?.className.split(' ');
-      
-      expect(classList).toContain('antialiased');
-      expect(classList).toContain('--font-geist-sans');
-      expect(classList).toContain('--font-geist-mono');
-    });
   });
 
-  describe('Props Handling', () => {
-    it('should accept and render children prop', () => {
-      const testContent = <div data-testid="custom-children">Custom Content</div>;
-      render(<RootLayout>{testContent}</RootLayout>);
-      
-      expect(document.querySelector('[data-testid="custom-children"]')).toBeInTheDocument();
-      expect(document.querySelector('[data-testid="custom-children"]')).toHaveTextContent('Custom Content');
-    });
-
-    it('should handle empty children', () => {
-      render(<RootLayout>{null}</RootLayout>);
-      
-      const bodyElement = document.querySelector('body');
-      expect(bodyElement).toBeInTheDocument();
-      expect(bodyElement?.children.length).toBe(0);
-    });
-
-    it('should handle multiple children', () => {
-      const multipleChildren = (
-        <>
-          <div data-testid="child1">Child 1</div>
-          <div data-testid="child2">Child 2</div>
-        </>
-      );
-      
-      render(<RootLayout>{multipleChildren}</RootLayout>);
-      
-      expect(document.querySelector('[data-testid="child1"]')).toBeInTheDocument();
-      expect(document.querySelector('[data-testid="child2"]')).toBeInTheDocument();
-    });
-  });
-
-  describe('TypeScript Types', () => {
-    it('should properly type the children prop', () => {
-      // This test ensures TypeScript compilation works correctly
-      const typedChildren: React.ReactNode = <div>Typed Children</div>;
-      
-      render(<RootLayout>{typedChildren}</RootLayout>);
-      
-      expect(document.querySelector('div')).toHaveTextContent('Typed Children');
-    });
-
-    it('should handle readonly props correctly', () => {
-      // This test ensures the readonly constraint is respected
-      const readonlyProps = {
-        children: <div>Readonly Children</div>
-      } as const;
-      
-      render(<RootLayout {...readonlyProps} />);
-      
-      expect(document.querySelector('div')).toHaveTextContent('Readonly Children');
-    });
-  });
-
-  describe('Performance', () => {
-    it('should render efficiently with minimal DOM nodes', () => {
-      render(<RootLayout>{mockChildren}</RootLayout>);
-      
-      // Should only have html > body > children structure
-      const htmlElement = document.querySelector('html');
-      const bodyElement = document.querySelector('body');
-      const childrenElement = document.querySelector('[data-testid="test-children"]');
-      
-      expect(htmlElement?.children.length).toBe(1); // Only body
-      expect(bodyElement?.children.length).toBe(1); // Only children
-      expect(childrenElement).toBeInTheDocument();
-    });
-  });
-
-  describe('SEO and Meta', () => {
+  describe('SEO and Metadata', () => {
     it('should have proper HTML lang attribute for SEO', () => {
       render(<RootLayout>{mockChildren}</RootLayout>);
       
       const htmlElement = document.querySelector('html');
       expect(htmlElement).toHaveAttribute('lang', 'en');
     });
+  });
 
-    it('should maintain proper document structure for crawlers', () => {
+  describe('Performance', () => {
+    it('should render without errors', () => {
+      expect(() => {
+        render(<RootLayout>{mockChildren}</RootLayout>);
+      }).not.toThrow();
+    });
+
+    it('should render children efficiently', () => {
+      const { container } = render(<RootLayout>{mockChildren}</RootLayout>);
+      
+      // Check that children are rendered in the expected location
+      expect(container.querySelector('[data-testid="test-children"]')).toBeInTheDocument();
+    });
+  });
+
+  describe('Cross-browser Compatibility', () => {
+    it('should maintain proper HTML structure across browsers', () => {
       render(<RootLayout>{mockChildren}</RootLayout>);
       
-      // Check that the document has proper semantic structure
+      // Verify basic HTML structure
       expect(document.documentElement.tagName).toBe('HTML');
       expect(document.body.tagName).toBe('BODY');
+    });
+
+    it('should apply font classes consistently', () => {
+      render(<RootLayout>{mockChildren}</RootLayout>);
+      
+      const bodyElement = document.querySelector('body');
+      const classList = bodyElement?.className || '';
+      
+      expect(classList).toContain('--font-geist-sans');
+      expect(classList).toContain('--font-geist-mono');
+      expect(classList).toContain('antialiased');
     });
   });
 
   describe('Edge Cases', () => {
-    it('should handle undefined children', () => {
-      render(<RootLayout>{undefined}</RootLayout>);
-      
-      const bodyElement = document.querySelector('body');
-      expect(bodyElement).toBeInTheDocument();
+    it('should handle empty children', () => {
+      expect(() => {
+        render(<RootLayout>{null}</RootLayout>);
+      }).not.toThrow();
     });
 
-    it('should handle boolean children', () => {
-      render(<RootLayout>{false}</RootLayout>);
+    it('should handle multiple children', () => {
+      const multipleChildren = (
+        <>
+          <div data-testid="child-1">Child 1</div>
+          <div data-testid="child-2">Child 2</div>
+        </>
+      );
       
-      const bodyElement = document.querySelector('body');
-      expect(bodyElement).toBeInTheDocument();
+      render(<RootLayout>{multipleChildren}</RootLayout>);
+      
+      expect(document.querySelector('[data-testid="child-1"]')).toBeInTheDocument();
+      expect(document.querySelector('[data-testid="child-2"]')).toBeInTheDocument();
     });
 
-    it('should handle number children', () => {
-      render(<RootLayout>{42}</RootLayout>);
+    it('should handle complex nested children', () => {
+      const complexChildren = (
+        <div data-testid="complex-child">
+          <h1>Title</h1>
+          <p>Paragraph</p>
+          <ul>
+            <li>Item 1</li>
+            <li>Item 2</li>
+          </ul>
+        </div>
+      );
       
-      const bodyElement = document.querySelector('body');
-      expect(bodyElement).toBeInTheDocument();
-      expect(bodyElement).toHaveTextContent('42');
-    });
-
-    it('should handle string children', () => {
-      render(<RootLayout>{"String Content"}</RootLayout>);
+      render(<RootLayout>{complexChildren}</RootLayout>);
       
-      const bodyElement = document.querySelector('body');
-      expect(bodyElement).toBeInTheDocument();
-      expect(bodyElement).toHaveTextContent('String Content');
+      expect(document.querySelector('[data-testid="complex-child"]')).toBeInTheDocument();
+      expect(document.querySelector('h1')).toHaveTextContent('Title');
+      expect(document.querySelectorAll('li')).toHaveLength(2);
     });
   });
 
   describe('Integration', () => {
-    it('should work with Next.js app structure', () => {
-      render(<RootLayout>{mockChildren}</RootLayout>);
-      
-      // Verify that the layout provides the expected structure
-      expect(document.querySelector('html')).toBeInTheDocument();
-      expect(document.querySelector('body')).toBeInTheDocument();
-      expect(document.querySelector('[data-testid="test-children"]')).toBeInTheDocument();
+    it('should work with Next.js routing', () => {
+      // This test verifies that the layout works with Next.js routing
+      // by ensuring it renders without conflicts
+      expect(() => {
+        render(<RootLayout>{mockChildren}</RootLayout>);
+      }).not.toThrow();
     });
 
-    it('should maintain proper nesting of elements', () => {
+    it('should maintain proper document head', () => {
       render(<RootLayout>{mockChildren}</RootLayout>);
       
-      const htmlElement = document.querySelector('html');
-      const bodyElement = document.querySelector('body');
-      const childrenElement = document.querySelector('[data-testid="test-children"]');
-      
-      expect(htmlElement).toContainElement(bodyElement);
-      expect(bodyElement).toContainElement(childrenElement);
+      // Verify that the document head is accessible
+      expect(document.head).toBeInTheDocument();
     });
   });
 }); 

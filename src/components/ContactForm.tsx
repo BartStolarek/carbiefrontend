@@ -2,21 +2,37 @@
 
 import { useState } from 'react';
 
+/**
+ * Contact Form Component
+ * 
+ * This component handles contact form submissions with real-time validation
+ * and user feedback. It sends form data to the API and shows success/error messages.
+ */
 export default function ContactForm() {
+  // Form data state - stores user input
   const [formData, setFormData] = useState({
     name: '',
     email: '',
     message: ''
   });
+  
+  // Loading state - shows spinner while submitting
   const [isSubmitting, setIsSubmitting] = useState(false);
+  
+  // Form status - tracks success/error states
   const [status, setStatus] = useState<'idle' | 'success' | 'error'>('idle');
 
+  /**
+   * Handle form submission
+   * Sends data to the API and shows appropriate feedback
+   */
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
     setStatus('idle');
 
     try {
+      // Send form data to the contact API
       const response = await fetch('/api/contact', {
         method: 'POST',
         headers: {
@@ -27,18 +43,23 @@ export default function ContactForm() {
 
       if (response.ok) {
         setStatus('success');
+        // Clear the form after successful submission
         setFormData({ name: '', email: '', message: '' });
       } else {
         setStatus('error');
       }
     } catch (error) {
-      console.error('Error:', error);
+      console.error('Error submitting contact form:', error);
       setStatus('error');
     } finally {
       setIsSubmitting(false);
     }
   };
 
+  /**
+   * Handle input changes
+   * Updates form data as user types
+   */
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setFormData({
       ...formData,
@@ -48,6 +69,7 @@ export default function ContactForm() {
 
   return (
     <form onSubmit={handleSubmit} className="max-w-lg mx-auto space-y-6">
+      {/* Name input field */}
       <div>
         <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-2">
           Name *
@@ -64,6 +86,7 @@ export default function ContactForm() {
         />
       </div>
       
+      {/* Email input field */}
       <div>
         <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
           Email *
@@ -80,6 +103,7 @@ export default function ContactForm() {
         />
       </div>
       
+      {/* Message textarea */}
       <div>
         <label htmlFor="message" className="block text-sm font-medium text-gray-700 mb-2">
           Message *
@@ -96,6 +120,7 @@ export default function ContactForm() {
         />
       </div>
       
+      {/* Submit button with loading state */}
       <button
         type="submit"
         disabled={isSubmitting}
@@ -103,6 +128,7 @@ export default function ContactForm() {
       >
         {isSubmitting ? (
           <>
+            {/* Loading spinner */}
             <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
               <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
               <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
@@ -111,6 +137,7 @@ export default function ContactForm() {
           </>
         ) : (
           <>
+            {/* Send icon */}
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
             </svg>
@@ -119,6 +146,7 @@ export default function ContactForm() {
         )}
       </button>
       
+      {/* Success message */}
       {status === 'success' && (
         <div className="p-4 bg-green-50 border border-green-200 rounded-lg">
           <div className="flex items-center">
@@ -131,6 +159,7 @@ export default function ContactForm() {
         </div>
       )}
       
+      {/* Error message */}
       {status === 'error' && (
         <div className="p-4 bg-red-50 border border-red-200 rounded-lg">
           <div className="flex items-center">

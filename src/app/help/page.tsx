@@ -4,8 +4,14 @@ import React from 'react';
 import Link from 'next/link';
 import ContactForm from '@/components/ContactForm';
 
+/**
+ * Help Page Component
+ * 
+ * Provides support resources including FAQs, contact form, and additional resources
+ * for users who need help with the Carbie app.
+ */
 export default function HelpPage() {
-
+  // Frequently asked questions with detailed answers
   const faqs = [
     {
       question: "How accurate is the AI food analysis?",
@@ -39,7 +45,7 @@ export default function HelpPage() {
       <header className="fixed top-0 left-0 right-0 z-50 backdrop-blur-md bg-white/80 border-b border-green-100">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
-            {/* Logo */}
+            {/* Logo with home link */}
             <div className="flex items-center space-x-3 group">
               <Link href="/" className="flex items-center space-x-3 group">
                 <div className="w-8 h-8 bg-gradient-to-br from-green-500 to-green-600 rounded-xl flex items-center justify-center shadow-sm group-hover:shadow-md transition-all duration-300">
@@ -49,7 +55,7 @@ export default function HelpPage() {
               </Link>
             </div>
             
-            {/* Navigation Links */}
+            {/* Navigation menu */}
             <nav className="hidden md:flex items-center space-x-8">
               <Link href="/#features" className="text-gray-600 hover:text-green-600 transition-colors duration-300 font-medium">
                 Features
@@ -59,7 +65,7 @@ export default function HelpPage() {
               </Link>
             </nav>
             
-            {/* Download Button */}
+            {/* Download button */}
             <Link
               href="/#download"
               className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg font-medium transition-all duration-300 flex items-center space-x-2 shadow-sm hover:shadow-md"
@@ -73,9 +79,9 @@ export default function HelpPage() {
         </div>
       </header>
 
-      {/* Main Content */}
+      {/* Main content area */}
       <div className="pt-16">
-        {/* Hero Section */}
+        {/* Hero section with page title */}
         <section className="py-16 bg-white">
           <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
             <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
@@ -87,7 +93,7 @@ export default function HelpPage() {
           </div>
         </section>
 
-        {/* Contact Form Section */}
+        {/* Contact form section */}
         <section className="py-16 bg-gray-50">
           <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-8 md:p-12">
@@ -103,7 +109,7 @@ export default function HelpPage() {
           </div>
         </section>
 
-        {/* FAQ Section */}
+        {/* FAQ section */}
         <section className="py-16 bg-white">
           <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center mb-12">
@@ -113,6 +119,7 @@ export default function HelpPage() {
               </p>
             </div>
 
+            {/* FAQ list */}
             <div className="space-y-6">
               {faqs.map((faq, index) => (
                 <div key={index} className="bg-gray-50 rounded-xl p-6 hover:bg-gray-100 transition-colors duration-300">
@@ -126,6 +133,7 @@ export default function HelpPage() {
               ))}
             </div>
 
+            {/* Contact link after FAQs */}
             <div className="text-center mt-12">
               <p className="text-gray-600 mb-4">
                 Still have questions? We&apos;re here to help!
@@ -140,7 +148,7 @@ export default function HelpPage() {
           </div>
         </section>
 
-        {/* Additional Resources Section */}
+        {/* Additional resources section */}
         <section className="py-16 bg-gray-50">
           <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center mb-12">
@@ -150,7 +158,9 @@ export default function HelpPage() {
               </p>
             </div>
 
+            {/* Resource cards */}
             <div className="grid md:grid-cols-3 gap-6">
+              {/* User Guide */}
               <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100 hover:shadow-md hover:border-green-200 transition-all duration-300 text-center">
                 <div className="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center mb-4 mx-auto">
                   <svg className="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -161,6 +171,7 @@ export default function HelpPage() {
                 <p className="text-gray-600 text-sm">Comprehensive guide to all features</p>
               </div>
 
+              {/* Video Tutorials */}
               <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100 hover:shadow-md hover:border-green-200 transition-all duration-300 text-center">
                 <div className="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center mb-4 mx-auto">
                   <svg className="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -171,6 +182,7 @@ export default function HelpPage() {
                 <p className="text-gray-600 text-sm">Step-by-step video guides</p>
               </div>
 
+              {/* Release Notes */}
               <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100 hover:shadow-md hover:border-green-200 transition-all duration-300 text-center">
                 <div className="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center mb-4 mx-auto">
                   <svg className="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">

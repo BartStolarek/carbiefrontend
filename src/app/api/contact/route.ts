@@ -1,14 +1,19 @@
 import nodemailer from 'nodemailer';
 import { NextResponse } from 'next/server';
 
-// Disable Next.js default body parsing for this route
+// Use Node.js runtime for this API route
 export const runtime = 'nodejs';
 
+/**
+ * Handle contact form submissions
+ * Receives form data and sends it via email
+ */
 export async function POST(request: Request) {
   try {
+    // Extract form data from the request
     const { name, email, message } = await request.json();
 
-    // Basic validation
+    // Validate that all required fields are provided
     if (!name || !email || !message) {
       return NextResponse.json(
         { message: 'All fields are required' },
@@ -16,7 +21,7 @@ export async function POST(request: Request) {
       );
     }
 
-    // Email validation
+    // Validate email format using a simple regex
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
       return NextResponse.json(
@@ -25,16 +30,7 @@ export async function POST(request: Request) {
       );
     }
 
-    // Log environment variables (without showing the password)
-    console.log('SMTP Configuration:');
-    console.log('Host:', process.env.SMTP_HOST);
-    console.log('Port:', process.env.SMTP_PORT);
-    console.log('User:', process.env.SMTP_USER);
-    console.log('From:', process.env.SMTP_FROM);
-    console.log('Password set:', !!process.env.SMTP_PASS);
-
-    // Create transporter with correct Zoho configuration
-    // Zoho supports both port 465 (SSL) and 587 (TLS)
+    // Configure email settings for Zoho SMTP
     const port = parseInt(process.env.SMTP_PORT || '587');
     const isSecurePort = port === 465;
     
@@ -47,36 +43,29 @@ export async function POST(request: Request) {
         pass: process.env.SMTP_PASS,
       },
       tls: {
-        // Do not fail on invalid certs
         rejectUnauthorized: false,
-        // Minimum TLS version
         minVersion: 'TLSv1.2',
-        // For port 587
         ciphers: 'SSLv3'
       },
-      // Connection timeout
       connectionTimeout: 30000,
       greetingTimeout: 30000,
       socketTimeout: 30000,
-      // Remove debug in production
       debug: process.env.NODE_ENV === 'development',
       logger: process.env.NODE_ENV === 'development',
     });
 
-    // Test the connection first
-    console.log('Testing SMTP connection...');
+    // Test the email connection before sending
     try {
       await transporter.verify();
-      console.log('SMTP connection verified successfully');
     } catch (verifyError: any) {
-      console.error('SMTP verification failed:', verifyError);
+      console.error('Email connection failed:', verifyError);
       
-      // Check for common Zoho issues
+      // Provide helpful error messages for common issues
       if (verifyError.message?.includes('Invalid login')) {
         return NextResponse.json(
           { 
-            message: 'Email authentication failed. Please check if app-specific password is configured in Zoho.',
-            hint: 'You may need to generate an app-specific password in Zoho Mail settings'
+            message: 'Email authentication failed. Please check your email settings.',
+            hint: 'You may need to generate an app-specific password in your email provider settings'
           },
           { status: 500 }
         );
@@ -85,7 +74,7 @@ export async function POST(request: Request) {
       throw verifyError;
     }
 
-    // Prepare email content with better formatting
+    // Create nicely formatted email content
     const htmlContent = `
       <!DOCTYPE html>
       <html>
@@ -125,8 +114,7 @@ export async function POST(request: Request) {
       </html>
     `;
 
-    // Send email
-    console.log('Sending email...');
+    // Send the email
     const info = await transporter.sendMail({
       from: `"Carbie Contact Form" <${process.env.SMTP_FROM}>`,
       to: process.env.SMTP_FROM,
@@ -142,7 +130,7 @@ ${message}
       replyTo: email,
     });
 
-    console.log('Email sent successfully:', info.messageId);
+    console.log('Contact form email sent successfully:', info.messageId);
     
     return NextResponse.json({ 
       message: 'Email sent successfully',
@@ -150,23 +138,18 @@ ${message}
     });
     
   } catch (error: any) {
-    console.error('Detailed error sending email:');
-    console.error('Error name:', error.name);
-    console.error('Error message:', error.message);
-    console.error('Error code:', error.code);
-    console.error('Error response:', error.response);
-    console.error('Error responseCode:', error.responseCode);
+    console.error('Error sending contact form email:', error);
 
-    // Return more specific error information
+    // Provide specific error messages based on the type of error
     let errorMessage = 'Failed to send email';
     let hint = '';
     
     if (error.code === 'EAUTH' || error.responseCode === 535) {
       errorMessage = 'Authentication failed';
-      hint = 'Check if you need an app-specific password for Zoho';
+      hint = 'Check if you need an app-specific password for your email provider';
     } else if (error.code === 'ECONNECTION') {
       errorMessage = 'Connection failed';
-      hint = 'Check SMTP settings and firewall';
+      hint = 'Check email settings and network connection';
     } else if (error.code === 'ETIMEDOUT') {
       errorMessage = 'Connection timed out';
       hint = 'Check network connectivity and firewall settings';
@@ -189,7 +172,10 @@ ${message}
   }
 }
 
-// Handle unsupported methods
+/**
+ * Handle unsupported HTTP methods
+ * Returns a clear error message for methods that aren't allowed
+ */
 export async function GET() {
   return NextResponse.json(
     { message: 'Method not allowed' },

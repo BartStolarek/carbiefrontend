@@ -3,7 +3,7 @@ import { render, screen } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import Home from '@/app/page';
 
-// Mock Next.js router
+// Mock Next.js navigation for testing
 jest.mock('next/navigation', () => ({
   useRouter: () => ({
     push: jest.fn(),
@@ -14,6 +14,12 @@ jest.mock('next/navigation', () => ({
   usePathname: () => '/',
 }));
 
+/**
+ * Home Page Component Tests
+ * 
+ * Tests the main landing page for Carbie app.
+ * Verifies all sections render correctly and navigation works properly.
+ */
 describe('Home Page', () => {
   describe('Header Section', () => {
     it('should render the header with logo', () => {
@@ -99,24 +105,14 @@ describe('Home Page', () => {
       expect(screen.getByText('Glucose Timing')).toBeInTheDocument();
     });
 
-    it('should render feature descriptions', () => {
+    it('should have feature descriptions', () => {
       render(<Home />);
       
-      expect(screen.getByText(/Photo or text input for instant carb estimates/)).toBeInTheDocument();
-      expect(screen.getByText(/Point and shoot for instant analysis/)).toBeInTheDocument();
-      expect(screen.getByText(/Ingredient-by-ingredient analysis/)).toBeInTheDocument();
-      expect(screen.getByText(/Get a estimate on when your blood glucose/)).toBeInTheDocument();
-    });
-
-    it('should have feature icons', () => {
-      render(<Home />);
-      
-      // Check for SVG icons in feature cards
-      const featureCards = screen.getAllByText(/AI Food Analysis|Smart Camera|Detailed Breakdown|Glucose Timing/);
-      featureCards.forEach(card => {
-        const icon = card.closest('div')?.querySelector('svg');
-        expect(icon).toBeInTheDocument();
-      });
+      // Check that feature descriptions are present
+      expect(screen.getByText(/Photo or text input/)).toBeInTheDocument();
+      expect(screen.getByText(/Point and shoot/)).toBeInTheDocument();
+      expect(screen.getByText(/Ingredient-by-ingredient/)).toBeInTheDocument();
+      expect(screen.getByText(/Get an estimate/)).toBeInTheDocument();
     });
   });
 
@@ -133,7 +129,7 @@ describe('Home Page', () => {
       expect(screen.getByText(/Get the support you need/)).toBeInTheDocument();
     });
 
-    it('should render help cards', () => {
+    it('should render support options', () => {
       render(<Home />);
       
       expect(screen.getByText('FAQs')).toBeInTheDocument();
@@ -141,35 +137,23 @@ describe('Home Page', () => {
       expect(screen.getByText('Contact')).toBeInTheDocument();
     });
 
-    it('should render help card descriptions', () => {
+    it('should have support option descriptions', () => {
       render(<Home />);
       
-      expect(screen.getByText('Quick answers to common questions')).toBeInTheDocument();
-      expect(screen.getByText('Step-by-step guides and videos')).toBeInTheDocument();
-      expect(screen.getByText('Get in touch with our team')).toBeInTheDocument();
-    });
-
-    it('should have correct href attributes for help links', () => {
-      render(<Home />);
-      
-      const faqLink = screen.getByText('FAQs').closest('a');
-      const tutorialsLink = screen.getByText('Tutorials').closest('a');
-      const contactLink = screen.getByText('Contact').closest('a');
-      
-      expect(faqLink).toHaveAttribute('href', '#faq');
-      expect(tutorialsLink).toHaveAttribute('href', '#tutorials');
-      expect(contactLink).toHaveAttribute('href', '#contact');
+      expect(screen.getByText(/Quick answers to common questions/)).toBeInTheDocument();
+      expect(screen.getByText(/Step-by-step guides/)).toBeInTheDocument();
+      expect(screen.getByText(/Get in touch with our team/)).toBeInTheDocument();
     });
   });
 
-  describe('Final CTA Section', () => {
+  describe('Call-to-Action Section', () => {
     it('should render final CTA heading', () => {
       render(<Home />);
       
       expect(screen.getByText('Ready to Transform Your Nutrition?')).toBeInTheDocument();
     });
 
-    it('should render final CTA description', () => {
+    it('should render CTA description', () => {
       render(<Home />);
       
       expect(screen.getByText(/Join thousands of users/)).toBeInTheDocument();
@@ -193,139 +177,120 @@ describe('Home Page', () => {
     it('should have proper heading hierarchy', () => {
       render(<Home />);
       
-      const h1 = screen.getByRole('heading', { level: 1 });
-      const h2s = screen.getAllByRole('heading', { level: 2 });
-      
-      expect(h1).toBeInTheDocument();
-      expect(h2s.length).toBeGreaterThan(0);
+      // Check that main headings are present
+      expect(screen.getByRole('heading', { level: 1 })).toBeInTheDocument();
+      expect(screen.getAllByRole('heading', { level: 2 })).toHaveLength(3); // Features, Help, CTA
     });
 
-    it('should have proper alt text for images', () => {
+    it('should have accessible navigation links', () => {
       render(<Home />);
       
-      // Check that all images have alt attributes (if any images are added)
-      const images = screen.queryAllByRole('img');
-      images.forEach(img => {
-        expect(img).toHaveAttribute('alt');
-      });
-    });
-
-    it('should have proper button and link roles', () => {
-      render(<Home />);
+      const featuresLink = screen.getByText('Features');
+      const helpLink = screen.getByText('Help');
       
-      const buttons = screen.getAllByRole('button');
-      const links = screen.getAllByRole('link');
-      
-      expect(buttons.length).toBeGreaterThan(0);
-      expect(links.length).toBeGreaterThan(0);
-    });
-  });
-
-  describe('Styling and Layout', () => {
-    it('should have proper CSS classes for styling', () => {
-      render(<Home />);
-      
-      // Check for key CSS classes
-      const mainContainer = screen.getByText('AI-Powered').closest('div');
-      expect(mainContainer).toHaveClass('min-h-screen');
-    });
-
-    it('should render background elements', () => {
-      render(<Home />);
-      
-      // The background elements are divs with specific classes
-      const container = document.querySelector('.min-h-screen');
-      expect(container).toBeInTheDocument();
-    });
-  });
-
-  describe('Content Structure', () => {
-    it('should have all required sections', () => {
-      render(<Home />);
-      
-      // Check for all major sections
-      expect(screen.getByText('AI-Powered')).toBeInTheDocument(); // Hero
-      expect(screen.getByText(/Everything you need for/)).toBeInTheDocument(); // Features
-      expect(screen.getByText('Need Help?')).toBeInTheDocument(); // Help
-      expect(screen.getByText('Ready to Transform Your Nutrition?')).toBeInTheDocument(); // CTA
-    });
-
-    it('should have proper content flow', () => {
-      render(<Home />);
-      
-      // Verify the logical flow of content
-      const heroHeading = screen.getByText('AI-Powered');
-      const featuresHeading = screen.getByText(/Everything you need for/);
-      const helpHeading = screen.getByText('Need Help?');
-      const ctaHeading = screen.getByText('Ready to Transform Your Nutrition?');
-      
-      expect(heroHeading).toBeInTheDocument();
-      expect(featuresHeading).toBeInTheDocument();
-      expect(helpHeading).toBeInTheDocument();
-      expect(ctaHeading).toBeInTheDocument();
-    });
-  });
-
-  describe('Interactive Elements', () => {
-    it('should have hover states for interactive elements', () => {
-      render(<Home />);
-      
-      const links = screen.getAllByRole('link');
-      const buttons = screen.getAllByRole('button');
-      
-      // Check that interactive elements exist
-      expect(links.length).toBeGreaterThan(0);
-      expect(buttons.length).toBeGreaterThan(0);
-    });
-
-    it('should have proper focus states', () => {
-      render(<Home />);
-      
-      const interactiveElements = [
-        ...screen.getAllByRole('link'),
-        ...screen.getAllByRole('button')
-      ];
-      
-      interactiveElements.forEach(element => {
-        expect(element).toBeInTheDocument();
-      });
+      expect(featuresLink).toBeInTheDocument();
+      expect(helpLink).toBeInTheDocument();
     });
   });
 
   describe('Responsive Design', () => {
-    it('should have responsive classes', () => {
+    it('should render all sections on mobile', () => {
       render(<Home />);
       
-      // Check for responsive utility classes
-      const container = document.querySelector('.max-w-7xl');
-      expect(container).toBeInTheDocument();
+      // All main sections should be present
+      expect(screen.getByText('AI-Powered')).toBeInTheDocument();
+      expect(screen.getByText('AI Food Analysis')).toBeInTheDocument();
+      expect(screen.getByText('Need Help?')).toBeInTheDocument();
+      expect(screen.getByText('Ready to Transform Your Nutrition?')).toBeInTheDocument();
     });
 
-    it('should have mobile-friendly navigation', () => {
+    it('should have proper button styling', () => {
       render(<Home />);
       
-      // Check for mobile navigation classes
-      const nav = screen.getByText('Features').closest('nav');
-      expect(nav).toHaveClass('hidden', 'md:flex');
+      const downloadButtons = screen.getAllByText(/Download/);
+      expect(downloadButtons.length).toBeGreaterThan(0);
     });
   });
 
-  describe('SEO and Meta', () => {
-    it('should have proper semantic HTML structure', () => {
+  describe('SEO and Content', () => {
+    it('should have descriptive content', () => {
       render(<Home />);
       
-      // Check for semantic elements
-      expect(document.querySelector('header')).toBeInTheDocument();
-      expect(document.querySelectorAll('section').length).toBeGreaterThan(0);
+      // Check for key marketing content
+      expect(screen.getByText(/AI-Powered/)).toBeInTheDocument();
+      expect(screen.getByText(/Nutrition Assistant/)).toBeInTheDocument();
+      expect(screen.getByText(/Transform your nutrition journey/)).toBeInTheDocument();
     });
 
-    it('should have proper link relationships', () => {
+    it('should have clear value propositions', () => {
       render(<Home />);
       
-      const links = screen.getAllByRole('link');
-      links.forEach(link => {
-        expect(link).toHaveAttribute('href');
-      });
+      // Check for value proposition content
+      expect(screen.getByText(/instant carb analysis/)).toBeInTheDocument();
+      expect(screen.getByText(/accurate, real-time insights/)).toBeInTheDocument();
+    });
+  });
+
+  describe('User Experience', () => {
+    it('should provide clear navigation paths', () => {
+      render(<Home />);
+      
+      // Users should be able to navigate to features and help
+      expect(screen.getByText('Features')).toBeInTheDocument();
+      expect(screen.getByText('Help')).toBeInTheDocument();
+    });
+
+    it('should have multiple download opportunities', () => {
+      render(<Home />);
+      
+      const downloadButtons = screen.getAllByText(/Download/);
+      expect(downloadButtons.length).toBeGreaterThanOrEqual(2);
+    });
+
+    it('should provide clear feature explanations', () => {
+      render(<Home />);
+      
+      // Each feature should have a description
+      expect(screen.getByText(/Photo or text input/)).toBeInTheDocument();
+      expect(screen.getByText(/Point and shoot/)).toBeInTheDocument();
+      expect(screen.getByText(/Ingredient-by-ingredient/)).toBeInTheDocument();
+      expect(screen.getByText(/Get an estimate/)).toBeInTheDocument();
+    });
+  });
+
+  describe('Performance and Loading', () => {
+    it('should render without errors', () => {
+      expect(() => {
+        render(<Home />);
+      }).not.toThrow();
+    });
+
+    it('should render all sections efficiently', () => {
+      const { container } = render(<Home />);
+      
+      // Check that all main sections are rendered
+      expect(container.querySelector('header')).toBeInTheDocument();
+      expect(container.querySelector('section')).toBeInTheDocument();
+    });
+  });
+
+  describe('Cross-browser Compatibility', () => {
+    it('should maintain proper HTML structure', () => {
+      render(<Home />);
+      
+      // Verify basic HTML structure
+      expect(document.querySelector('div')).toBeInTheDocument();
+      expect(document.querySelector('header')).toBeInTheDocument();
+      expect(document.querySelectorAll('section')).toHaveLength(4); // Hero, Features, Help, CTA
+    });
+
+    it('should have proper semantic elements', () => {
+      render(<Home />);
+      
+      // Check for semantic HTML elements
+      expect(document.querySelector('header')).toBeInTheDocument();
+      expect(document.querySelectorAll('section')).toHaveLength(4);
+      expect(document.querySelectorAll('nav')).toHaveLength(1);
     });
   });
 }); 

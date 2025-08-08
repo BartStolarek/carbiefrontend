@@ -1,10 +1,13 @@
+/* Import Tailwind CSS framework */
 @import "tailwindcss";
 
+/* CSS custom properties for consistent theming */
 :root {
   --background: #ffffff;
   --foreground: #171717;
 }
 
+/* Theme configuration for Tailwind */
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
@@ -12,15 +15,9 @@
   --font-mono: var(--font-geist-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
+/* Base body styles for consistent appearance */
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-sans), Arial, Helvetica, sans-serif;
 }

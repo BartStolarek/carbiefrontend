@@ -1,20 +1,30 @@
 #!/usr/bin/env node
 
 /**
- * Test script for the contact API endpoint
- * Usage: node test-contact-api.js
+ * Contact API Test Script
+ * 
+ * This script tests the contact form API to make sure it's working properly.
+ * It sends a test message and checks if the server responds correctly.
+ * 
+ * How to use:
+ *   node test-contact-api.js          - Run basic test
+ *   node test-contact-api.js --all    - Run all tests including error cases
  */
 
+// Configuration - where to send the test request
+const BASE_URL = process.env.TEST_URL || 'http://localhost:3000';
+const CONTACT_ENDPOINT = `${BASE_URL}/api/contact`;
+
+/**
+ * Main test function - sends a test contact form and checks the response
+ */
 async function testContactAPI() {
-  const baseURL = process.env.TEST_URL || 'http://localhost:3000';
-  const endpoint = `${baseURL}/api/contact`;
-  
   console.log('🧪 Testing Contact API');
-  console.log(`📍 Endpoint: ${endpoint}`);
+  console.log(`📍 Testing endpoint: ${CONTACT_ENDPOINT}`);
   console.log('=' .repeat(50));
 
-  // Test data
-  const testData = {
+  // Sample contact form data for testing
+  const testContactData = {
     name: 'Test User',
     email: 'test@example.com',
     message: 'This is a test message from the API test script. If you receive this, the contact form is working correctly!'
@@ -22,24 +32,25 @@ async function testContactAPI() {
 
   try {
     console.log('📤 Sending test contact form...');
-    console.log('📋 Test data:', JSON.stringify(testData, null, 2));
+    console.log('📋 Test data:', JSON.stringify(testContactData, null, 2));
     
+    // Measure how long the request takes
     const startTime = Date.now();
     
-    const response = await fetch(endpoint, {
+    // Send the contact form data to the server
+    const response = await fetch(CONTACT_ENDPOINT, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify(testData),
+      body: JSON.stringify(testContactData),
     });
 
-    const endTime = Date.now();
-    const duration = endTime - startTime;
-
-    console.log(`⏱️  Response time: ${duration}ms`);
+    const responseTime = Date.now() - startTime;
+    console.log(`⏱️  Response time: ${responseTime}ms`);
     console.log(`📊 Status: ${response.status} ${response.statusText}`);
 
+    // Check if the request was successful
     if (!response.ok) {
       console.error('❌ Request failed with status:', response.status);
       const errorText = await response.text();
@@ -47,6 +58,7 @@ async function testContactAPI() {
       return;
     }
 
+    // Get the server's response
     const result = await response.json();
     console.log('✅ Success!');
     console.log('📬 Response:', result);
@@ -58,10 +70,11 @@ async function testContactAPI() {
   } catch (error) {
     console.error('❌ Test failed with error:');
     
+    // Helpful error messages for common issues
     if (error instanceof TypeError && error.message.includes('fetch')) {
       console.error('🌐 Network error - is your server running?');
       console.error(`   Try: npm run dev`);
-      console.error(`   Or check if ${baseURL} is accessible`);
+      console.error(`   Or check if ${BASE_URL} is accessible`);
     } else {
       console.error('💥 Unexpected error:', error);
     }
@@ -70,40 +83,21 @@ async function testContactAPI() {
   }
 }
 
-// Test different scenarios
-async function runAllTests() {
-  console.log('🚀 Starting comprehensive API tests...\n');
-
-  // Test 1: Valid submission
-  await testContactAPI();
-  
-  console.log('\n' + '🧪 Testing edge cases...');
-  
-  // Test 2: Missing fields
-  await testMissingFields();
-  
-  // Test 3: Invalid email
-  await testInvalidEmail();
-  
-  // Test 4: Wrong HTTP method
-  await testWrongMethod();
-}
-
+/**
+ * Test what happens when required fields are missing
+ */
 async function testMissingFields() {
-  const baseURL = process.env.TEST_URL || 'http://localhost:3000';
-  const endpoint = `${baseURL}/api/contact`;
-  
   console.log('\n📝 Test: Missing required fields');
   
   try {
-    const response = await fetch(endpoint, {
+    const response = await fetch(CONTACT_ENDPOINT, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
         name: 'Test User',
-        // missing email and message
+        // Intentionally missing email and message to test validation
       }),
     });
 
@@ -121,21 +115,21 @@ async function testMissingFields() {
   }
 }
 
+/**
+ * Test what happens with an invalid email format
+ */
 async function testInvalidEmail() {
-  const baseURL = process.env.TEST_URL || 'http://localhost:3000';
-  const endpoint = `${baseURL}/api/contact`;
-  
   console.log('\n📧 Test: Invalid email format');
   
   try {
-    const response = await fetch(endpoint, {
+    const response = await fetch(CONTACT_ENDPOINT, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
         name: 'Test User',
-        email: 'invalid-email',
+        email: 'invalid-email', // Invalid email format
         message: 'Test message'
       }),
     });
@@ -149,15 +143,15 @@ async function testInvalidEmail() {
   }
 }
 
+/**
+ * Test what happens when using the wrong HTTP method
+ */
 async function testWrongMethod() {
-  const baseURL = process.env.TEST_URL || 'http://localhost:3000';
-  const endpoint = `${baseURL}/api/contact`;
-  
   console.log('\n🔄 Test: Wrong HTTP method');
   
   try {
-    const response = await fetch(endpoint, {
-      method: 'GET', // Should be POST
+    const response = await fetch(CONTACT_ENDPOINT, {
+      method: 'GET', // Should be POST for contact form
     });
 
     console.log(`📊 Status: ${response.status}`);
@@ -174,11 +168,33 @@ async function testWrongMethod() {
   }
 }
 
-// Main execution
-const args = process.argv.slice(2);
+/**
+ * Run all tests including error scenarios
+ */
+async function runAllTests() {
+  console.log('🚀 Starting comprehensive API tests...\n');
 
-if (args.includes('--all') || args.includes('-a')) {
+  // Test 1: Normal contact form submission
+  await testContactAPI();
+  
+  console.log('\n' + '🧪 Testing error scenarios...');
+  
+  // Test 2: Missing required fields
+  await testMissingFields();
+  
+  // Test 3: Invalid email format
+  await testInvalidEmail();
+  
+  // Test 4: Wrong HTTP method
+  await testWrongMethod();
+}
+
+// Check command line arguments to decide which tests to run
+const commandLineArgs = process.argv.slice(2);
+
+if (commandLineArgs.includes('--all') || commandLineArgs.includes('-a')) {
   runAllTests();
 } else {
+  // Default: just run the basic contact form test
   testContactAPI();
 }

@@ -1,9 +1,15 @@
 import React from 'react';
 
+/**
+ * Home Page Component
+ * 
+ * The main landing page for Carbie - an AI-powered nutrition assistant app.
+ * Features sections include: hero, features, help & support, and call-to-action.
+ */
 export default function Home() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-green-50 via-white to-green-50">
-      {/* Premium Header Navigation */}
+      {/* Header Navigation */}
       <header className="fixed top-0 left-0 right-0 z-50 backdrop-blur-md bg-white/80 border-b border-green-100">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
@@ -39,9 +45,9 @@ export default function Home() {
         </div>
       </header>
 
-      {/* Hero Section - Improved spacing and focus */}
+      {/* Hero Section - Main introduction */}
       <section className="relative min-h-screen flex items-center justify-center pt-16">
-        {/* Subtle background elements */}
+        {/* Decorative background elements */}
         <div className="absolute top-32 left-10 w-16 h-16 bg-green-200 rounded-full opacity-30"></div>
         <div className="absolute top-40 right-20 w-12 h-12 bg-green-300 rounded-full opacity-20"></div>
         <div className="absolute bottom-40 left-20 w-8 h-8 bg-green-400 rounded-full opacity-25"></div>
@@ -58,6 +64,7 @@ export default function Home() {
               or describe your meal for accurate, real-time insights.
             </p>
             
+            {/* Call to action button */}
             <div className="flex justify-center items-center pt-4">
               <a
                 href="#download"
@@ -73,7 +80,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Features Section - Cleaner grid, better hierarchy */}
+      {/* Features Section - App capabilities */}
       <section id="features" className="py-24 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
@@ -86,8 +93,9 @@ export default function Home() {
             </p>
           </div>
 
+          {/* Feature cards grid */}
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {/* AI Food Analysis */}
+            {/* AI Food Analysis Feature */}
             <div className="bg-white rounded-2xl p-8 shadow-sm border border-gray-100 hover:shadow-lg hover:border-green-200 transition-all duration-300 group text-center">
               <div className="w-16 h-16 bg-gradient-to-br from-green-500 to-green-600 rounded-2xl flex items-center justify-center mb-6 mx-auto group-hover:scale-105 transition-transform duration-300">
                 <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -99,7 +107,7 @@ export default function Home() {
               <p className="text-gray-600 leading-relaxed">Photo or text input for instant carb estimates with advanced machine learning precision.</p>
             </div>
 
-            {/* Smart Camera */}
+            {/* Smart Camera Feature */}
             <div className="bg-white rounded-2xl p-8 shadow-sm border border-gray-100 hover:shadow-lg hover:border-green-200 transition-all duration-300 group text-center">
               <div className="w-16 h-16 bg-gradient-to-br from-green-500 to-green-600 rounded-2xl flex items-center justify-center mb-6 mx-auto group-hover:scale-105 transition-transform duration-300">
                 <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -111,7 +119,7 @@ export default function Home() {
               <p className="text-gray-600 leading-relaxed">Point and shoot for instant analysis with advanced image recognition technology.</p>
             </div>
 
-            {/* Detailed Breakdown */}
+            {/* Detailed Breakdown Feature */}
             <div className="bg-white rounded-2xl p-8 shadow-sm border border-gray-100 hover:shadow-lg hover:border-green-200 transition-all duration-300 group text-center">
               <div className="w-16 h-16 bg-gradient-to-br from-green-500 to-green-600 rounded-2xl flex items-center justify-center mb-6 mx-auto group-hover:scale-105 transition-transform duration-300">
                 <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -122,7 +130,7 @@ export default function Home() {
               <p className="text-gray-600 leading-relaxed">Ingredient-by-ingredient analysis with carb ranges and nutritional insights.</p>
             </div>
 
-            {/* Blood Glucose Timing */}
+            {/* Blood Glucose Timing Feature */}
             <div className="bg-white rounded-2xl p-8 shadow-sm border border-gray-100 hover:shadow-lg hover:border-green-200 transition-all duration-300 group text-center">
               <div className="w-16 h-16 bg-gradient-to-br from-green-500 to-green-600 rounded-2xl flex items-center justify-center mb-6 mx-auto group-hover:scale-105 transition-transform duration-300">
                 <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -130,15 +138,13 @@ export default function Home() {
                 </svg>
               </div>
               <h3 className="text-xl font-bold text-gray-900 mb-4">Glucose Timing</h3>
-              <p className="text-gray-600 leading-relaxed">Get a estimate on when your blood glucose will peak from individual ingredients.</p>
+              <p className="text-gray-600 leading-relaxed">Get an estimate on when your blood glucose will peak from individual ingredients.</p>
             </div>
-
-            
           </div>
         </div>
       </section>
 
-      {/* Help & Support Section - Streamlined */}
+      {/* Help & Support Section */}
       <section id="help" className="py-24 bg-gray-50">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
@@ -148,7 +154,9 @@ export default function Home() {
             Get the support you need to make the most of your nutrition journey.
           </p>
 
+          {/* Support options grid */}
           <div className="grid md:grid-cols-3 gap-6">
+            {/* FAQs */}
             <a href="#faq" className="bg-white rounded-xl p-6 shadow-sm border border-gray-100 hover:shadow-md hover:border-green-200 transition-all duration-300 group">
               <div className="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center mb-4 mx-auto group-hover:bg-green-200 transition-colors duration-300">
                 <svg className="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -159,6 +167,7 @@ export default function Home() {
               <p className="text-gray-600 text-sm">Quick answers to common questions</p>
             </a>
 
+            {/* Tutorials */}
             <a href="#tutorials" className="bg-white rounded-xl p-6 shadow-sm border border-gray-100 hover:shadow-md hover:border-green-200 transition-all duration-300 group">
               <div className="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center mb-4 mx-auto group-hover:bg-green-200 transition-colors duration-300">
                 <svg className="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -169,6 +178,7 @@ export default function Home() {
               <p className="text-gray-600 text-sm">Step-by-step guides and videos</p>
             </a>
 
+            {/* Contact */}
             <a href="#contact" className="bg-white rounded-xl p-6 shadow-sm border border-gray-100 hover:shadow-md hover:border-green-200 transition-all duration-300 group">
               <div className="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center mb-4 mx-auto group-hover:bg-green-200 transition-colors duration-300">
                 <svg className="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -182,7 +192,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Final CTA Section - Clean and focused */}
+      {/* Final Call-to-Action Section */}
       <section className="py-24 bg-gradient-to-br from-green-600 to-green-700 relative overflow-hidden">
         <div className="absolute inset-0 bg-black/10"></div>
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
@@ -203,7 +213,7 @@ export default function Home() {
           </a>
         </div>
         
-        {/* Subtle background decoration */}
+        {/* Decorative background elements */}
         <div className="absolute top-10 right-10 w-20 h-20 bg-white/10 rounded-full"></div>
         <div className="absolute bottom-10 left-10 w-16 h-16 bg-white/5 rounded-full"></div>
       </section>
