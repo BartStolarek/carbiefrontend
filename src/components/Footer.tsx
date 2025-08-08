@@ -1,4 +1,5 @@
 import React from 'react';
+import Link from 'next/link';
 
 /**
  * Footer Component
@@ -13,12 +14,12 @@ export default function Footer() {
         <div className="grid md:grid-cols-4 gap-8">
           {/* Brand Section */}
           <div className="col-span-1 md:col-span-2">
-            <div className="flex items-center space-x-3 mb-4">
-              <div className="w-8 h-8 bg-gradient-to-br from-green-500 to-green-600 rounded-xl flex items-center justify-center">
+            <Link href="/" className="flex items-center space-x-3 mb-4 group">
+              <div className="w-8 h-8 bg-gradient-to-br from-green-500 to-green-600 rounded-xl flex items-center justify-center group-hover:scale-105 transition-transform duration-300">
                 <span className="text-white font-bold text-sm">C</span>
               </div>
               <span className="text-xl font-bold">Carbie</span>
-            </div>
+            </Link>
             <p className="text-gray-300 mb-6 max-w-md">
               Transform your nutrition journey with AI-powered carb analysis. 
               Get instant insights for better health management.
@@ -50,14 +51,19 @@ export default function Footer() {
             <h3 className="text-sm font-semibold text-gray-300 tracking-wider uppercase mb-4">Product</h3>
             <ul className="space-y-3">
               <li>
-                <a href="#features" className="text-gray-400 hover:text-white transition-colors duration-300">
-                  Features
-                </a>
+                <Link href="/" className="text-gray-400 hover:text-white transition-colors duration-300">
+                  Home
+                </Link>
               </li>
               <li>
-                <a href="#download" className="text-gray-400 hover:text-white transition-colors duration-300">
+                <Link href="/#features" className="text-gray-400 hover:text-white transition-colors duration-300">
+                  Features
+                </Link>
+              </li>
+              <li>
+                <Link href="/#download" className="text-gray-400 hover:text-white transition-colors duration-300">
                   Download
-                </a>
+                </Link>
               </li>
               <li>
                 <a href="/help" className="text-gray-400 hover:text-white transition-colors duration-300">
@@ -97,12 +103,12 @@ export default function Footer() {
               © 2024 Carbie. All rights reserved.
             </p>
             <div className="mt-4 md:mt-0">
-              <a href="#download" className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg font-medium transition-all duration-300 flex items-center space-x-2 shadow-sm hover:shadow-md">
+              <Link href="/#download" className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg font-medium transition-all duration-300 flex items-center space-x-2 shadow-sm hover:shadow-md">
                 <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
                   <path d="M3,20.5V3.5C3,2.91 3.34,2.39 3.84,2.15L13.69,12L3.84,21.85C3.34,21.61 3,21.09 3,20.5M16.81,15.12L6.05,21.34L14.54,12.85L16.81,15.12M20.16,10.81C20.5,11.08 20.75,11.5 20.75,12C20.75,12.5 20.53,12.9 20.18,13.18L17.89,14.5L15.39,12L17.89,9.5L20.16,10.81M6.05,2.66L16.81,8.88L14.54,11.15L6.05,2.66Z"/>
                 </svg>
                 <span>Download App</span>
-              </a>
+              </Link>
             </div>
           </div>
         </div>
