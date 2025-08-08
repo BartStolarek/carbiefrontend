@@ -22,7 +22,7 @@ export default function PrivacyPolicy() {
               Privacy Policy
             </h1>
             <p className="text-lg text-gray-600">
-              Last updated: [Insert Date]
+              Last updated: 8th August 2025
             </p>
           </div>
 
@@ -106,7 +106,7 @@ export default function PrivacyPolicy() {
 
               <h2 className="text-2xl font-bold text-gray-900 mb-4">8. International Users</h2>
               <p className="text-gray-700 mb-6">
-                Our servers are located in [insert country — your home server location]. If you use Carbie from another country, your information will be transferred and processed here.
+                Our servers are located in Australia. If you use Carbie from another country, your information will be transferred and processed here.
               </p>
 
               <h2 className="text-2xl font-bold text-gray-900 mb-4">9. Changes to This Policy</h2>
@@ -116,7 +116,7 @@ export default function PrivacyPolicy() {
 
               <h2 className="text-2xl font-bold text-gray-900 mb-4">Contact Us</h2>
               <p className="text-gray-700">
-                If you have any questions about this privacy policy, email us at: [Your Contact Email]
+                If you have any questions about this privacy policy, email us at: support@carbie.app
               </p>
             </div>
           </div>

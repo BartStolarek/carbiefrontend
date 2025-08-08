@@ -22,7 +22,7 @@ export default function TermsOfUse() {
               Terms of Use
             </h1>
             <p className="text-lg text-gray-600">
-              Last updated: [Insert Date]
+              Last updated: 8th August 2025
             </p>
           </div>
 
@@ -109,7 +109,7 @@ export default function TermsOfUse() {
 
               <h2 className="text-2xl font-bold text-gray-900 mb-4">11. Contact Us</h2>
               <p className="text-gray-700">
-                If you have questions about these Terms, contact us at: [Your Contact Email]
+                If you have questions about these Terms, contact us at: support@carbie.app
               </p>
             </div>
           </div>
