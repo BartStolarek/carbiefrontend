@@ -61,14 +61,42 @@ export async function POST(request: Request) {
       console.error('Email connection failed:', verifyError);
       
       // Provide helpful error messages for common issues
-      if (verifyError instanceof Error && verifyError.message?.includes('Invalid login')) {
-        return NextResponse.json(
-          { 
-            message: 'Email authentication failed. Please check your email settings.',
-            hint: 'You may need to generate an app-specific password in your email provider settings'
-          },
-          { status: 500 }
-        );
+      if (verifyError instanceof Error) {
+        const errorObj = verifyError as { code?: string; message?: string };
+        
+        if (errorObj.code === 'EAUTH' || errorObj.message?.includes('Invalid login')) {
+          return NextResponse.json(
+            { 
+              message: 'Authentication failed',
+              hint: 'Check if you need an app-specific password for your email provider'
+            },
+            { status: 500 }
+          );
+        } else if (errorObj.code === 'ETIMEDOUT') {
+          return NextResponse.json(
+            { 
+              message: 'Connection timed out',
+              hint: 'Check network connectivity and firewall settings'
+            },
+            { status: 500 }
+          );
+        } else if (errorObj.code === 'ECONNECTION') {
+          return NextResponse.json(
+            { 
+              message: 'Connection failed',
+              hint: 'Check email settings and network connection'
+            },
+            { status: 500 }
+          );
+        } else if (errorObj.message) {
+          return NextResponse.json(
+            { 
+              message: errorObj.message,
+              hint: 'Check your email configuration'
+            },
+            { status: 500 }
+          );
+        }
       }
       
       throw verifyError;

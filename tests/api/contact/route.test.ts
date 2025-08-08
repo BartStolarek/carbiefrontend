@@ -245,7 +245,9 @@ describe('Contact API Route', () => {
       });
 
       it('should handle email verification failure', async () => {
-        mockVerify.mockRejectedValue({ code: 'EAUTH', message: 'Authentication failed' });
+        const authError = new Error('Authentication failed');
+        (authError as any).code = 'EAUTH';
+        mockVerify.mockRejectedValue(authError);
 
         const request = createRequest({
           name: 'Test User',
@@ -297,7 +299,9 @@ describe('Contact API Route', () => {
       });
 
       it('should handle timeout errors', async () => {
-        mockVerify.mockRejectedValue({ code: 'ETIMEDOUT', message: 'Connection timed out' });
+        const timeoutError = new Error('Connection timed out');
+        (timeoutError as any).code = 'ETIMEDOUT';
+        mockVerify.mockRejectedValue(timeoutError);
 
         const request = createRequest({
           name: 'Test User',
@@ -314,7 +318,9 @@ describe('Contact API Route', () => {
       });
 
       it('should handle authentication errors', async () => {
-        mockVerify.mockRejectedValue({ code: 'EAUTH', message: 'Invalid credentials' });
+        const authError = new Error('Invalid credentials');
+        (authError as any).code = 'EAUTH';
+        mockVerify.mockRejectedValue(authError);
 
         const request = createRequest({
           name: 'Test User',
