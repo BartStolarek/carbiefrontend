@@ -13,7 +13,7 @@ process.env.SMTP_PORT = '587';
 process.env.SMTP_USER = 'test@example.com';
 process.env.SMTP_PASS = 'testpassword';
 process.env.SMTP_FROM = 'test@example.com';
-process.env.NODE_ENV = 'test';
+
 
 // Mock console methods to reduce noise in test output
 global.console = {

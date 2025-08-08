@@ -155,7 +155,7 @@ export default function ContactForm() {
             </svg>
             <p className="text-green-800 font-medium">Message sent successfully!</p>
           </div>
-          <p className="text-green-600 text-sm mt-1">We'll get back to you as soon as possible.</p>
+          <p className="text-green-600 text-sm mt-1">We&apos;ll get back to you as soon as possible.</p>
         </div>
       )}
       

@@ -30,7 +30,7 @@ export default function TermsOfUse() {
           <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-8 md:p-12">
             <div className="prose prose-lg max-w-none">
               <p className="text-gray-700 mb-8">
-                These Terms of Use ("Terms") explain how you can use Carbie. By using the app, you agree to these Terms. If you don't agree, please don't use the app.
+                These Terms of Use (&quot;Terms&quot;) explain how you can use Carbie. By using the app, you agree to these Terms. If you don&apos;t agree, please don&apos;t use the app.
               </p>
 
               <h2 className="text-2xl font-bold text-gray-900 mb-4">1. What Carbie Does</h2>
@@ -90,7 +90,7 @@ export default function TermsOfUse() {
 
               <h2 className="text-2xl font-bold text-gray-900 mb-4">8. Service Availability</h2>
               <ul className="list-disc pl-6 mb-6 space-y-2 text-gray-700">
-                <li>Carbie is provided "as is" and "as available."</li>
+                <li>Carbie is provided &quot;as is&quot; and &quot;as available.&quot;</li>
                 <li>We do not guarantee uninterrupted service, error-free results, or perfect accuracy.</li>
                 <li>We may update, pause, or stop the service at any time without notice.</li>
               </ul>
@@ -104,7 +104,7 @@ export default function TermsOfUse() {
 
               <h2 className="text-2xl font-bold text-gray-900 mb-4">10. Changes to These Terms</h2>
               <p className="text-gray-700 mb-6">
-                We may update these Terms at any time. If we make significant changes, we'll notify you in the app or on our website.
+                We may update these Terms at any time. If we make significant changes, we&apos;ll notify you in the app or on our website.
               </p>
 
               <h2 className="text-2xl font-bold text-gray-900 mb-4">11. Contact Us</h2>

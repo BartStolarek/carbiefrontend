@@ -48,6 +48,7 @@ cp .env.example .env.local
 ```
 
 Configure the following environment variables:
+- `PORT`: Server port (defaults to 3001)
 - `SMTP_HOST`: Your email server host
 - `SMTP_PORT`: Email server port (587 or 465)
 - `SMTP_USER`: Email username
@@ -63,7 +64,7 @@ yarn dev
 pnpm dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) in your browser to see the application.
+Open [http://localhost:3001](http://localhost:3001) in your browser to see the application.
 
 ## Available Scripts
 

@@ -49,7 +49,7 @@ export default function PrivacyPolicy() {
 
               <h3 className="text-xl font-semibold text-gray-900 mb-3">Information we store</h3>
               <ul className="list-disc pl-6 mb-6 space-y-2 text-gray-700">
-                <li>Claude AI responses and the prompts you send (anonymised so they can't be linked back to you) for future app improvements and feature development.</li>
+                <li>Claude AI responses and the prompts you send (anonymised so they can&apos;t be linked back to you) for future app improvements and feature development.</li>
                 <li>Subscription status (whether your account is active or not). No payment details are stored by us.</li>
               </ul>
 
@@ -111,7 +111,7 @@ export default function PrivacyPolicy() {
 
               <h2 className="text-2xl font-bold text-gray-900 mb-4">9. Changes to This Policy</h2>
               <p className="text-gray-700 mb-6">
-                We may update this privacy policy from time to time. If we make significant changes, we'll notify you in the app or on our website.
+                We may update this privacy policy from time to time. If we make significant changes, we&apos;ll notify you in the app or on our website.
               </p>
 
               <h2 className="text-2xl font-bold text-gray-900 mb-4">Contact Us</h2>

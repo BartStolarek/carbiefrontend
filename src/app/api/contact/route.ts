@@ -57,11 +57,11 @@ export async function POST(request: Request) {
     // Test the email connection before sending
     try {
       await transporter.verify();
-    } catch (verifyError: any) {
+    } catch (verifyError: unknown) {
       console.error('Email connection failed:', verifyError);
       
       // Provide helpful error messages for common issues
-      if (verifyError.message?.includes('Invalid login')) {
+      if (verifyError instanceof Error && verifyError.message?.includes('Invalid login')) {
         return NextResponse.json(
           { 
             message: 'Email authentication failed. Please check your email settings.',
@@ -137,35 +137,38 @@ ${message}
       messageId: info.messageId 
     });
     
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Error sending contact form email:', error);
 
     // Provide specific error messages based on the type of error
     let errorMessage = 'Failed to send email';
     let hint = '';
     
-    if (error.code === 'EAUTH' || error.responseCode === 535) {
-      errorMessage = 'Authentication failed';
-      hint = 'Check if you need an app-specific password for your email provider';
-    } else if (error.code === 'ECONNECTION') {
-      errorMessage = 'Connection failed';
-      hint = 'Check email settings and network connection';
-    } else if (error.code === 'ETIMEDOUT') {
-      errorMessage = 'Connection timed out';
-      hint = 'Check network connectivity and firewall settings';
-    } else if (error.code === 'ESOCKET') {
-      errorMessage = 'Socket error';
-      hint = 'Possible TLS/SSL configuration issue';
-    } else if (error.message) {
-      errorMessage = error.message;
+    if (error instanceof Error) {
+      const errorObj = error as { code?: string; responseCode?: number };
+      if (errorObj.code === 'EAUTH' || errorObj.responseCode === 535) {
+        errorMessage = 'Authentication failed';
+        hint = 'Check if you need an app-specific password for your email provider';
+      } else if (errorObj.code === 'ECONNECTION') {
+        errorMessage = 'Connection failed';
+        hint = 'Check email settings and network connection';
+      } else if (errorObj.code === 'ETIMEDOUT') {
+        errorMessage = 'Connection timed out';
+        hint = 'Check network connectivity and firewall settings';
+      } else if (errorObj.code === 'ESOCKET') {
+        errorMessage = 'Socket error';
+        hint = 'Possible TLS/SSL configuration issue';
+      } else if (error.message) {
+        errorMessage = error.message;
+      }
     }
 
     return NextResponse.json(
       { 
         message: errorMessage,
         hint: hint,
-        error: process.env.NODE_ENV === 'development' ? error.message : undefined,
-        code: error.code 
+        error: process.env.NODE_ENV === 'development' && error instanceof Error ? error.message : undefined,
+        code: error instanceof Error ? (error as { code?: string }).code : undefined
       },
       { status: 500 }
     );
