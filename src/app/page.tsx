@@ -55,7 +55,7 @@ export default function Home() {
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
               Everything you need for
-              <span className="text-green-600"> smart nutrition</span>
+              <span className="text-green-600"> smart fast nutrition</span>
             </h2>
             <p className="text-lg text-gray-600 max-w-2xl mx-auto">
               Powerful features designed to give you complete control over your nutrition journey.
