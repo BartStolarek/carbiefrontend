@@ -90,7 +90,7 @@ describe('Home Page', () => {
       render(<Home />);
       
       expect(screen.getByText(/Everything you need for/)).toBeInTheDocument();
-      expect(screen.getByText(/smart nutrition/)).toBeInTheDocument();
+      expect(screen.getByText(/smart fast nutrition/)).toBeInTheDocument();
     });
 
     it('should render features section description', () => {
